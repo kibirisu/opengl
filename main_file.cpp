@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "allmodels.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
-#include "camera.h"
+/*#include "camera.h"*/
 
 
 float speed = 0;//[radians/s]
@@ -150,14 +150,14 @@ void car2(float angle, float wheelAngle) {
 
 
 //Drawing procedure
-void drawScene(GLFWwindow* window, float angle, float wheelAngle, Camera camera) {
+void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	//************Place any code here that draws something inside the window******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear color and depth buffers
 
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 1.0f, 50.0f); //Compute projection matrix
-	glm::mat4 V = glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up); //Compute view matrix
-  camera.Inputs(window);
-  camera.Matrix(45.0f, 0.1f, 100.0f);
+	glm::mat4 V = glm::lookAt(glm::vec3(0.0f, 0.0f, -7.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); //Compute view matrix
+  /*camera.Inputs(window);*/
+  /*camera.Matrix(45.0f, 0.1f, 100.0f);*/
 
 	spLambert->use();//Aktywacja programu cieniuj¿cego
 	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
@@ -172,7 +172,7 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle, Camera camera)
 
 int main(void)
 {
-  Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 2.0f));
+  /*Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 2.0f));*/
 	GLFWwindow* window; //Pointer to object that represents the application window
 
 	glfwSetErrorCallback(error_callback);//Register error processing callback procedure
@@ -210,7 +210,7 @@ int main(void)
 		angle += speed * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame
 		wheelAngle += PI / 6 * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame
 		glfwSetTime(0); //clear internal timer
-		drawScene(window, angle, wheelAngle, camera); //Execute drawing procedure
+		drawScene(window, angle, wheelAngle); //Execute drawing procedure
 		glfwPollEvents(); //Process callback procedures corresponding to the events that took place up to now
 	}
 	freeOpenGLProgram(window);
