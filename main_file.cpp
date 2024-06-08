@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "allmodels.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
+#include "myCube.h"
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -44,6 +45,7 @@ float lastFrame = 0.0f;
 
 float speed = 0;//[radians/s]
 float turn = 0; //skret kół
+GLuint tex;
 
 void processInput(GLFWwindow *window)
 {
@@ -136,7 +138,28 @@ void error_callback(int error, const char* description) {
 /*}*/
 
 
+GLuint readTexture(const char* filename) {
+	GLuint tex;
+	glActiveTexture(GL_TEXTURE0);
 
+	//Read into computers memory
+	std::vector<unsigned char> image;   //Allocate memory 
+	unsigned width, height;   //Variables for image size
+	//Read the image
+	unsigned error = lodepng::decode(image, width, height, filename);
+
+	//Import to graphics card memory
+	glGenTextures(1, &tex); //Initialize one handle
+	glBindTexture(GL_TEXTURE_2D, tex); //Activate handle
+	//Copy image to graphics cards memory reprezented by the active handle
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	return tex;
+}
 
 //Initialization code procedure
 void initOpenGLProgram(GLFWwindow* window) {
@@ -144,12 +167,14 @@ void initOpenGLProgram(GLFWwindow* window) {
 	//************Place any code here that needs to be executed once, at the program start************
 	glClearColor(0, 0, 0, 1); //Set color buffer clear color
 	glEnable(GL_DEPTH_TEST); //Turn on pixel depth test based on depth buffer
+	tex = readTexture("bricks.png");
 	/*glfwSetKeyCallback(window, key_callback);*/
 }
 
 //Release resources allocated by the program
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
+	glDeleteTextures(1, &tex);
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
 
@@ -273,8 +298,16 @@ void paintings(glm::mat4 Ms)
 {
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-8.0f, 2.0f, -99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));
+	/*glUniform4f(spLambert->u("color"), 0, 0, 1, 1);*/
+	/*glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));*/
+	glUniformMatrix4fv(spTextured->u("M"), 1, false, glm::value_ptr(Mp1));
+	glEnableVertexAttribArray(spTextured->a("vertex"));
+	glVertexAttribPointer(spTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices);
+	glEnableVertexAttribArray(spTextured->a("texCoord"));
+	glVertexAttribPointer(spTextured->a("texCoord"), 2, GL_FLOAT, false, 0, myCubeTexCoords);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glUniform1i(spTextured->u("tex"), 0);
 	Models::cube.drawSolid();
 
 	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
@@ -407,6 +440,8 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	room1exit(Ms);
 	paintings(Ms);
+
+  spTextured->use();
 
 	glfwSwapBuffers(window); //Copy back buffer to the front buffer
 }
