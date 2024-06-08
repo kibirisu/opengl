@@ -153,68 +153,6 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
 
-
-
-void car2(float angle, float wheelAngle) {
-	glm::mat4 Ms = glm::mat4(1.0f);
-	Ms = glm::rotate(Ms, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
-
-	glm::mat4 Mp1 = Ms;
-	Mp1 = glm::translate(Mp1, glm::vec3(0 * 13.0f, 0.0f, 0.0f));
-	Mp1 = glm::scale(Mp1, glm::vec3(5.0f, 1.0f, 5.0f));
-
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));
-	Models::cube.drawSolid();
-
-	glm::mat4 Mk1 = Ms;
-	Mk1 = glm::translate(Mk1, glm::vec3(6.5f, 0.0f, 0.0f));
-	Mk1 = glm::scale(Mk1, glm::vec3(1.5f, 1.0f, 1.0f));
-	glUniform4f(spLambert->u("color"), 1, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk1));
-	Models::cube.drawSolid();
-
-	glm::mat4 Mp2 = Ms;
-	Mp2 = glm::translate(Mp2, glm::vec3(1 * 13.0f, 0.0f, 0.0f));
-	Mp2 = glm::scale(Mp2, glm::vec3(5.0f, 1.0f, 5.0f));
-
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp2));
-	Models::cube.drawSolid();
-
-	glm::mat4 Mk2 = Ms;
-	Mk2 = glm::translate(Mk2, glm::vec3(19.5f, 0.0f, 0.0f));
-	Mk2 = glm::scale(Mk2, glm::vec3(1.5f, 1.0f, 1.0f));
-	glUniform4f(spLambert->u("color"), 1, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk2));
-	Models::cube.drawSolid();
-
-	glm::mat4 Mp3 = Ms;
-	Mp3 = glm::translate(Mp3, glm::vec3(2 * 13.0f, 0.0f, 0.0f));
-	Mp3 = glm::scale(Mp3, glm::vec3(5.0f, 1.0f, 5.0f));
-
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp3));
-	Models::cube.drawSolid();
-
-	glm::mat4 Mk3 = Ms;
-	Mk3 = glm::translate(Mk3, glm::vec3(32.5f, 0.0f, 0.0f));
-	Mk3 = glm::scale(Mk3, glm::vec3(1.5f, 1.0f, 1.0f));
-	glUniform4f(spLambert->u("color"), 1, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk3));
-	Models::cube.drawSolid();
-
-	glm::mat4 Mp4 = Ms;
-	Mp4 = glm::translate(Mp4, glm::vec3(3 * 13.0f, 0.0f, 0.0f));
-	Mp4 = glm::scale(Mp4, glm::vec3(5.0f, 1.0f, 5.0f));
-
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp4));
-	Models::cube.drawSolid();
-
-}
-
 void room1exit(glm::mat4 Ms) {
 
 	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
@@ -373,6 +311,16 @@ void character() {
   Models::sphere.drawSolid();
 }
 
+void picture() {
+	glm::mat4 Ms = glm::translate(glm::mat4(1.0f), glm::vec3(-1.95f, -0.50f, 0.0f));
+
+	glm::mat4 Mp = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 1.0f, 1.0f));
+	Mp = glm::translate(Mp, glm::vec3(0.0f, 2.0f, 0.0f));
+	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp));
+	Models::cube.drawSolid();
+}
+
 //Drawing procedure
 void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	//************Place any code here that draws something inside the window******************l
@@ -386,6 +334,7 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
   character();
+  picture();
 	glm::mat4 Ms = glm::mat4(1.0f);
 	Ms = glm::rotate(Ms, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	room1exit(Ms);
