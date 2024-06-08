@@ -269,6 +269,69 @@ void corridor(glm::mat4 Ms)
 	Models::cube.drawSolid();
 }
 
+void paintings(glm::mat4 Ms)
+{
+	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp1 = glm::translate(Mp1, glm::vec3(-8.0f, 2.0f, -99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp2 = glm::translate(Mp2, glm::vec3(-4.0f, 2.0f, -99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp2));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp3 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp3 = glm::translate(Mp3, glm::vec3(4.0f, 2.0f, -99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp3));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp4 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp4 = glm::translate(Mp4, glm::vec3(8.0f, 2.0f, -99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp4));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp0 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp0 = glm::translate(Mp0, glm::vec3(0.0f, 2.0f, -99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp0));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp5 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp5 = glm::translate(Mp5, glm::vec3(-8.0f, 2.0f, 99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp5));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp6 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp6 = glm::translate(Mp6, glm::vec3(-4.0f, 2.0f, 99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp6));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp7 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp7 = glm::translate(Mp7, glm::vec3(4.0f, 2.0f, 99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp7));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp8 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp8 = glm::translate(Mp8, glm::vec3(8.0f, 2.0f, 99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp8));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mp9 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
+	Mp9 = glm::translate(Mp9, glm::vec3(0.0f, 2.0f, 99.0f));
+	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp9));
+	Models::cube.drawSolid();
+}
+
 void character() {
 	glm::mat4 Ms = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.65f, 0.0f));
 
@@ -311,16 +374,6 @@ void character() {
   Models::sphere.drawSolid();
 }
 
-void picture() {
-	glm::mat4 Ms = glm::translate(glm::mat4(1.0f), glm::vec3(-1.95f, -0.50f, 0.0f));
-
-	glm::mat4 Mp = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 1.0f, 1.0f));
-	Mp = glm::translate(Mp, glm::vec3(0.0f, 2.0f, 0.0f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp));
-	Models::cube.drawSolid();
-}
-
 //Drawing procedure
 void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	//************Place any code here that draws something inside the window******************l
@@ -334,24 +387,26 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
   character();
-  picture();
 	glm::mat4 Ms = glm::mat4(1.0f);
 	Ms = glm::rotate(Ms, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	room1exit(Ms);
+	paintings(Ms);
 	Ms = glm::rotate(Ms, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	corridor(Ms);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	room2exit(Ms);
+	paintings(Ms);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	corridor(Ms);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	room2exit(Ms);
+	paintings(Ms);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	corridor(Ms);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	room1exit(Ms);
+	paintings(Ms);
 
 	glfwSwapBuffers(window); //Copy back buffer to the front buffer
 }
