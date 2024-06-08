@@ -215,45 +215,120 @@ void car2(float angle, float wheelAngle) {
 
 }
 
-void room() {
-	glm::mat4 Ms = glm::mat4(1.0f);
+void room1exit(glm::mat4 Ms) {
 
 	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
+	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
 	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf1));
 	Models::cube.drawSolid();
 
 	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
-	/*glUniform4f(spLambert->u("color"), 1, 1, 1, 1);*/
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf2));
 	Models::cube.drawSolid();
 
 	glm::mat4 Mw1 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
 	Mw1 = glm::translate(Mw1, glm::vec3(0.0f, 1.0f, 80.0f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw1));
 	Models::cube.drawSolid();
 
-  glm::mat4 Mw2 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
-  Mw2 = glm::translate(Mw2, glm::vec3(0.0f, 1.0f, -80.0f));
-  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw2));
-  Models::cube.drawSolid();
+	glm::mat4 Mw2 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
+	Mw2 = glm::translate(Mw2, glm::vec3(0.0f, 1.0f, -80.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw2));
+	Models::cube.drawSolid();
 
-  glm::mat4 Mw3 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
-  Mw3 = glm::translate(Mw3, glm::vec3(80.0f, 1.0f, 0.0f));
-  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw3));
-  Models::cube.drawSolid();
+	glm::mat4 Mw3 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
+	Mw3 = glm::translate(Mw3, glm::vec3(80.0f, 1.0f, 0.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw3));
+	Models::cube.drawSolid();
 
-  glm::mat4 Mw4 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 0.75f));
-  Mw4 = glm::translate(Mw4, glm::vec3(-80.0f, 1.0f, 1.70f));
-  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw4));
-  Models::cube.drawSolid();
+	glm::mat4 Mw4 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
+	Mw4 = glm::translate(Mw4, glm::vec3(-80.0f, 1.0f, 0.0f));
+	
+	glm::mat4 Mk1 = glm::scale(Mw4, glm::vec3(1.0f, 1.0f, 0.4f));
+	Mk1 = glm::translate(Mk1, glm::vec3(0.0f, 0.0f, 1.5f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk1));
+	Models::cube.drawSolid();
 
-  glm::mat4 Mw5 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 0.75f));
-  Mw5 = glm::translate(Mw5, glm::vec3(-80.0f, 1.0f, -1.70f));
-  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw5));
-  Models::cube.drawSolid();
+	glm::mat4 Mk2 = glm::scale(Mw4, glm::vec3(1.0f, 1.0f, 0.4f));
+	Mk2 = glm::translate(Mk2, glm::vec3(0.0f, 0.0f, -1.5f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk2));
+	Models::cube.drawSolid();
+}
+
+void room2exit(glm::mat4 Ms) {
+
+	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
+	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
+	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf1));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
+	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf2));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mw1 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
+	Mw1 = glm::translate(Mw1, glm::vec3(0.0f, 1.0f, 80.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw1));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mw2 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
+	Mw2 = glm::translate(Mw2, glm::vec3(0.0f, 1.0f, -80.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw2));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mw4 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
+	Mw4 = glm::translate(Mw4, glm::vec3(-80.0f, 1.0f, 0.0f));
+
+	glm::mat4 Mk1 = glm::scale(Mw4, glm::vec3(1.0f, 1.0f, 0.4f));
+	Mk1 = glm::translate(Mk1, glm::vec3(0.0f, 0.0f, 1.5f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk1));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mk2 = glm::scale(Mw4, glm::vec3(1.0f, 1.0f, 0.4f));
+	Mk2 = glm::translate(Mk2, glm::vec3(0.0f, 0.0f, -1.5f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk2));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mw5 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
+	Mw5 = glm::translate(Mw5, glm::vec3(80.0f, 1.0f, 0.0f));
+
+	glm::mat4 Mk4 = glm::scale(Mw5, glm::vec3(1.0f, 1.0f, 0.4f));
+	Mk4 = glm::translate(Mk4, glm::vec3(0.0f, 0.0f, 1.5f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk4));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mk5 = glm::scale(Mw5, glm::vec3(1.0f, 1.0f, 0.4f));
+	Mk5 = glm::translate(Mk5, glm::vec3(0.0f, 0.0f, -1.5f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk5));
+	Models::cube.drawSolid();
+}
+
+void corridor(glm::mat4 Ms)
+{
+	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(1.0f, 0.025f, 0.45f));
+	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
+	glUniform4f(spLambert->u("color"), 1, 0, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf1));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(1.0f, 0.025f, 0.45f));
+	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf2));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mf3 = glm::scale(Ms, glm::vec3(1.0f, 0.375f, 0.025f));
+	Mf3 = glm::translate(Mf3, glm::vec3(0.0f, 1.0f, 17.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf3));
+	Models::cube.drawSolid();
+
+	glm::mat4 Mf4 = glm::scale(Ms, glm::vec3(1.0f, 0.375f, 0.025f));
+	Mf4 = glm::translate(Mf4, glm::vec3(0.0f, 1.0f, -17.0f));
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf4));
+	Models::cube.drawSolid();
 }
 
 
@@ -262,17 +337,30 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	//************Place any code here that draws something inside the window******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear color and depth buffers
 
-  glm::mat4 P = glm::perspective(glm::radians(fov), 1.0f, 0.1f, 100.0f);
-  glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	glm::mat4 P = glm::perspective(glm::radians(fov), 1.0f, 0.1f, 100.0f);
+	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	spLambert->use();//Aktywacja programu cieniującego
 	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
+	glm::mat4 Ms = glm::mat4(1.0f);
+	Ms = glm::rotate(Ms, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	room1exit(Ms);
+	Ms = glm::rotate(Ms, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	/*car2(angle, wheelAngle);*/
-  room();
-
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	corridor(Ms);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	room2exit(Ms);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	corridor(Ms);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	room2exit(Ms);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	corridor(Ms);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	room1exit(Ms);
 
 	glfwSwapBuffers(window); //Copy back buffer to the front buffer
 }
