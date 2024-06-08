@@ -218,17 +218,42 @@ void car2(float angle, float wheelAngle) {
 void room() {
 	glm::mat4 Ms = glm::mat4(1.0f);
 
-	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(5.0f, 0.025f, 5.0f));
-	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
+	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf1));
 	Models::cube.drawSolid();
 
-	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(5.0f, 0.025f, 5.0f));
-	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 12.0f, 0.0f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
+	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
+	/*glUniform4f(spLambert->u("color"), 1, 1, 1, 1);*/
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf2));
 	Models::cube.drawSolid();
+
+	glm::mat4 Mw1 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
+	Mw1 = glm::translate(Mw1, glm::vec3(0.0f, 1.0f, 80.0f));
+	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw1));
+	Models::cube.drawSolid();
+
+  glm::mat4 Mw2 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
+  Mw2 = glm::translate(Mw2, glm::vec3(0.0f, 1.0f, -80.0f));
+  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw2));
+  Models::cube.drawSolid();
+
+  glm::mat4 Mw3 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
+  Mw3 = glm::translate(Mw3, glm::vec3(80.0f, 1.0f, 0.0f));
+  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw3));
+  Models::cube.drawSolid();
+
+  glm::mat4 Mw4 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 0.75f));
+  Mw4 = glm::translate(Mw4, glm::vec3(-80.0f, 1.0f, 1.70f));
+  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw4));
+  Models::cube.drawSolid();
+
+  glm::mat4 Mw5 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 0.75f));
+  Mw5 = glm::translate(Mw5, glm::vec3(-80.0f, 1.0f, -1.70f));
+  glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw5));
+  Models::cube.drawSolid();
 }
 
 
