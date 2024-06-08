@@ -338,38 +338,38 @@ void character() {
 	// Corpus
 	glm::mat4 Mp = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.5f));
 	Mp = glm::translate(Mp, glm::vec3(0.0f, 2.0f, 0.0f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp));
 	Models::cube.drawSolid();
 
 	/* // Legs*/
 	glm::mat4 Ml = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Ml = glm::translate(Ml, glm::vec3(0.0f, 0.0f, -1.5f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Ml));
 	Models::cube.drawSolid();
 	glm::mat4 Ml2 = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Ml2 = glm::translate(Ml2, glm::vec3(0.0f, 0.0f, 1.5));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Ml2));
 	Models::cube.drawSolid();
 
   // Hands
 	glm::mat4 Mr = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Mr = glm::translate(Mr, glm::vec3(0.0f, 2.0f, 3.5f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mr));
 	Models::cube.drawSolid();
 	glm::mat4 Mr2 = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Mr2 = glm::translate(Mr2, glm::vec3(0.0f, 2.0f, -3.5f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mr2));
 	Models::cube.drawSolid();
 
   // Head
   glm::mat4 Mh = glm::scale(Ms, 0.1f * glm::vec3(0.5, 0.5, 0.5));
   Mh = glm::translate(Mh, glm::vec3(0.0f, 4.0f, 0.0f));
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
+	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mh));
   Models::sphere.drawSolid();
 }
