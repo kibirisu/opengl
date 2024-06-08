@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lodepng.h"
 #include "shaderprogram.h"
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -382,13 +382,21 @@ void endPaintings(glm::mat4 Ms)
 	Models::cube.drawSolid();
 }
 
-void midPainting(glm::mat4 Ms)
+void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 {
+	spTextured->use();
+	glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V));
+
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-99.0f, -2.0f, 0.0f));
 	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));
 	Models::cube.drawSolid();
+
+	spLambert->use();
+	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 }
 
 void character() {
@@ -441,9 +449,11 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glm::mat4 P = glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.1f, 100.0f);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-	spTextured->use();
+	spLambert->use();
 	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+	/*glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P));*/
+	/*glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V));*/
 
   character();
 	spLambert->use();//Aktywacja programu cieniującego
@@ -451,7 +461,7 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
 	glm::mat4 Ms = glm::mat4(1.0f);
-	midPainting(Ms);
+	midPainting(Ms, P, V);
 
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 0.0f, 1.0f));
 	room1exit(Ms);
@@ -482,7 +492,7 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 	Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
 
-	midPainting(Ms);
+	midPainting(Ms, P, V);
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
