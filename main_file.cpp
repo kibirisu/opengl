@@ -42,8 +42,7 @@ float fov   =  45.0f;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-float speed = 0;//[radians/s]
-float turn = 0; //skret kół
+GLuint tex;
 
 void processInput(GLFWwindow *window)
 {
@@ -135,8 +134,28 @@ void error_callback(int error, const char* description) {
 /*	}*/
 /*}*/
 
+GLuint readTexture(const char* filename) {
+	GLuint tex;
+	glActiveTexture(GL_TEXTURE0);
 
+	//Read into computers memory
+	std::vector<unsigned char> image;   //Allocate memory 
+	unsigned width, height;   //Variables for image size
+	//Read the image
+	unsigned error = lodepng::decode(image, width, height, filename);
 
+	//Import to graphics card memory
+	glGenTextures(1, &tex); //Initialize one handle
+	glBindTexture(GL_TEXTURE_2D, tex); //Activate handle
+	//Copy image to graphics cards memory reprezented by the active handle
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	return tex;
+}
 
 //Initialization code procedure
 void initOpenGLProgram(GLFWwindow* window) {
@@ -144,12 +163,13 @@ void initOpenGLProgram(GLFWwindow* window) {
 	//************Place any code here that needs to be executed once, at the program start************
 	glClearColor(0, 0, 0, 1); //Set color buffer clear color
 	glEnable(GL_DEPTH_TEST); //Turn on pixel depth test based on depth buffer
-	/*glfwSetKeyCallback(window, key_callback);*/
+	tex = readTexture("bricks.png");
 }
 
 //Release resources allocated by the program
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
+	glDeleteTextures(1, &tex);
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
 
@@ -271,11 +291,13 @@ void corridor(glm::mat4 Ms)
 
 void paintings(glm::mat4 Ms)
 {
+	/*spTextured->use();*/
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-8.0f, 2.0f, -99.0f));
 	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));
 	Models::cube.drawSolid();
+	/*spLambert->use();*/
 
 	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp2 = glm::translate(Mp2, glm::vec3(-4.0f, 2.0f, -99.0f));
@@ -419,11 +441,15 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glm::mat4 P = glm::perspective(glm::radians(fov), 1.0f, 0.1f, 100.0f);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-	spLambert->use();//Aktywacja programu cieniującego
+	spTextured->use();
 	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
   character();
+	spLambert->use();//Aktywacja programu cieniującego
+	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+
 	glm::mat4 Ms = glm::mat4(1.0f);
 	midPainting(Ms);
 
@@ -508,8 +534,8 @@ int main(void)
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
     processInput(window);
-		angle += speed * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame
-		wheelAngle += PI / 6 * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame
+		/*angle += speed * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame*/
+		/*wheelAngle += PI / 6 * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame*/
 		/*glfwSetTime(0); //clear internal timer*/
 		drawScene(window, angle, wheelAngle); //Execute drawing procedure
 		glfwPollEvents(); //Process callback procedures corresponding to the events that took place up to now
