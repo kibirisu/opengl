@@ -388,10 +388,10 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 
   character();
 	glm::mat4 Ms = glm::mat4(1.0f);
-	Ms = glm::rotate(Ms, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 0.0f, 1.0f));
 	room1exit(Ms);
 	paintings(Ms);
-	Ms = glm::rotate(Ms, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	corridor(Ms);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
