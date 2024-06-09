@@ -449,44 +449,45 @@ void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V, int start)
 	texCube(P, V, Mp1, tex.at(files[start]));
 }
 
-void character() {
-	glm::mat4 Ms = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.68f, 0.0f));
+void character(glm::mat4 Ms, float r, float g, float b) {
+	Ms = glm::translate(Ms, glm::vec3(0.0f, -0.68f, 0.0f));
+	spLambert->use();
 
 	// Corpus
 	glm::mat4 Mp = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.5f));
 	Mp = glm::translate(Mp, glm::vec3(0.0f, 2.0f, 0.0f));
-	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+	glUniform4f(spLambert->u("color"), r,g,b, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp));
 	Models::cube.drawSolid();
 
 	/* // Legs*/
 	glm::mat4 Ml = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Ml = glm::translate(Ml, glm::vec3(0.0f, 0.0f, -1.5f));
-	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+	glUniform4f(spLambert->u("color"), 0, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Ml));
 	Models::cube.drawSolid();
 	glm::mat4 Ml2 = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Ml2 = glm::translate(Ml2, glm::vec3(0.0f, 0.0f, 1.5));
-	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+	glUniform4f(spLambert->u("color"), 0, 0, 0, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Ml2));
 	Models::cube.drawSolid();
 
   // Hands
 	glm::mat4 Mr = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Mr = glm::translate(Mr, glm::vec3(0.0f, 2.0f, 3.5f));
-	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+	glUniform4f(spLambert->u("color"), r, g, b, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mr));
 	Models::cube.drawSolid();
 	glm::mat4 Mr2 = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.20f));
 	Mr2 = glm::translate(Mr2, glm::vec3(0.0f, 2.0f, -3.5f));
-	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+	glUniform4f(spLambert->u("color"), r, g, b, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mr2));
 	Models::cube.drawSolid();
 
   // Head
   glm::mat4 Mh = glm::scale(Ms, 0.1f * glm::vec3(0.5, 0.5, 0.5));
   Mh = glm::translate(Mh, glm::vec3(0.0f, 4.0f, 0.0f));
-	glUniform4f(spLambert->u("color"), 1, 0, 0, 1);
+	glUniform4f(spLambert->u("color"), 1.0f, 0.89f, 0.8f, 1);
 	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mh));
   Models::sphere.drawSolid();
 }
@@ -495,18 +496,19 @@ void character() {
 
 
 //Drawing procedure
-void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
+void drawScene(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear color and depth buffers
+
+	glm::mat4 Ms = glm::mat4(1.0f);
 
 	glm::mat4 P = glm::perspective(glm::radians(fov), 1920.0f/1080.0f, 0.1f, 100.0f);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	spLambert->use();//Aktywacja programu cieniującego
-    character();
+    character(glm::translate(Ms, glm::vec3(-1.3f, 0.0f, 0.0f)),0.3f,0.8f, 0.34f);
 	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
-	glm::mat4 Ms = glm::mat4(1.0f);
 
 
 	spTextured->use();
@@ -524,11 +526,20 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	corridor(Ms,P,V);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 
+
 	//pokoj 2 + korytarz
 	room2exit(Ms, P, V);
 	endPaintings(Ms, P, V,15);
 	paintings(Ms,P,V,19);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+
+	glm::mat4 Mludz = glm::translate(Ms, glm::vec3(-3.0f, 0.0f, 1.5f));
+	Mludz = glm::rotate(Mludz, PI, glm::vec3(0.0f, 0.0f, 1.0f));
+	Mludz = glm::rotate(Mludz, PI/2, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	
+	character(Mludz, 0.136f, 0.38f, 0.834f);
+
 	corridor(Ms, P, V);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 
@@ -537,6 +548,12 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	paintings(Ms, P, V,29);
 	endPaintings(Ms, P, V,39);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+
+	glm::mat4 Mludz2 = glm::translate(Ms, glm::vec3(-3.9f, 0.0f, -1.5f));
+	Mludz2 = glm::rotate(Mludz2, PI, glm::vec3(0.0f, 0.0f, 1.0f));
+	Mludz2 = glm::rotate(Mludz2, PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+	character(Mludz2, 0.836f, 0.08f, 0.234f);
+
 	corridor(Ms, P, V);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	
@@ -547,9 +564,16 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 	Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
 	midPainting(Ms, P, V,57);
+
+	glm::mat4 Mludz3 = glm::translate(Ms, glm::vec3(-3.9f, 0.0f, -1.5f));
+	Mludz3 = glm::rotate(Mludz3, PI, glm::vec3(0.0f, 0.0f, 1.0f));
+	Mludz3 = glm::rotate(Mludz3, PI / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+	Mludz3 = glm::translate(Mludz3,  glm::vec3(-3.0f, 0.7f, -3.0f));
+
+	character(Mludz3, 0.536f, 0.38f, 0.534f);
+
+
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
-
-
 
 	glfwSwapBuffers(window); //Copy back buffer to the front buffer
 }
@@ -589,8 +613,6 @@ int main(void)
   glfwSetCursorPosCallback(window, mouse_callback);
 
 	//Main application loop
-	float angle = 0; //declare variable for storing current rotation angle
-	float wheelAngle = 0;
 	glfwSetTime(0); //clear internal timer
 	while (!glfwWindowShouldClose(window)) //As long as the window shouldnt be closed yet...
 	{
@@ -601,7 +623,7 @@ int main(void)
 		/*angle += speed * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame*/
 		/*wheelAngle += PI / 6 * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame*/
 		/*glfwSetTime(0); //clear internal timer*/
-		drawScene(window, angle, wheelAngle); //Execute drawing procedure
+		drawScene(window); //Execute drawing procedure
 		glfwPollEvents(); //Process callback procedures corresponding to the events that took place up to now
 	}
 	freeOpenGLProgram(window);
