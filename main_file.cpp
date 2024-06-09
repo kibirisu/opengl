@@ -53,7 +53,35 @@ GLuint ceiling;
 std::map<const char*, GLuint> tex;
 
 const char *files[] = {
-  "ciemne.png"
+	"portrety/mozart.png",
+	"portrety/beethoven.png",
+	"portrety/gutenberg.png",
+	"portrety/kolubm.png",
+	"portrety/kopernik.png",
+	"portrety/mona_lisa.png",
+	"portrety/sienkiewicz.png",
+	"portrety/woman.png",
+	"portrety/napoleon.png",
+	"portrety/newton.png",
+	"portrety/picasso.png",
+	"portrety/shakespeare.png",
+	"portrety/van_gogh.png",
+	"portrety/mickiewicz.png",
+	"portrety/davinvi.png",
+	"obrazy/1.png",
+	"obrazy/2.png",
+	"obrazy/3.png",
+	"obrazy/4.png",
+	"obrazy/5.png",
+	"obrazy/6.png",
+	"obrazy/7.png",
+	"obrazy/8.png",
+	"obrazy/9.png",
+	"obrazy/10.png",
+	"obrazy/11.png",
+	"obrazy/12.png",
+	"obrazy/13.png",
+	"obrazy/14.png"
 };
 
 void processInput(GLFWwindow *window)
@@ -201,9 +229,9 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	glDeleteTextures(1, &tex1);
 	glDeleteTextures(1, &wall);
 	glDeleteTextures(1, &floor10);
-  for (const auto& [k, v] : tex) {
-    glDeleteTextures(1, &v);
-  }
+	/*for (const auto& [k, v] : tex) {
+		glDeleteTextures(1, &v);
+	}*/
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
 
@@ -311,85 +339,85 @@ void corridor(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 	texCube(P, V, Mf4, wall);
 }
 
-void paintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
+void paintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V, int start)
 {
 	/*spTextured->use();*/
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-8.0f, 2.0f, -99.0f));
-	texCube(P, V, Mp1, tex.at("ciemne.png"));
+	texCube(P, V, Mp1, tex.at(files[start]));
 
 
 	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp2 = glm::translate(Mp2, glm::vec3(-4.0f, 2.0f, -99.0f));
-	texCube(P, V, Mp2, tex0);
+	texCube(P, V, Mp2, tex.at(files[start+1]));
 
 
 	glm::mat4 Mp3 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp3 = glm::translate(Mp3, glm::vec3(4.0f, 2.0f, -99.0f));
-	texCube(P, V, Mp3, tex0);
+	texCube(P, V, Mp3, tex.at(files[start+2]));
 
 
 	glm::mat4 Mp4 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp4 = glm::translate(Mp4, glm::vec3(8.0f, 2.0f, -99.0f));
-	texCube(P, V, Mp4, tex0);
+	texCube(P, V, Mp4, tex.at(files[start+3]));
 
 
 	glm::mat4 Mp0 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp0 = glm::translate(Mp0, glm::vec3(0.0f, 2.0f, -99.0f));
-	texCube(P, V, Mp0, tex0);
+	texCube(P, V, Mp0, tex.at(files[start+4]));
 
 
 	glm::mat4 Mp5 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp5 = glm::translate(Mp5, glm::vec3(-8.0f, 2.0f, 99.0f));
-	texCube(P, V, Mp5, tex0);
+	texCube(P, V, Mp5, tex.at(files[start+5]));
 
 
 	glm::mat4 Mp6 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp6 = glm::translate(Mp6, glm::vec3(-4.0f, 2.0f, 99.0f));
-	texCube(P, V, Mp6, tex0);
+	texCube(P, V, Mp6, tex.at(files[start+6]));
 
 
 	glm::mat4 Mp7 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp7 = glm::translate(Mp7, glm::vec3(4.0f, 2.0f, 99.0f));
-	texCube(P, V, Mp7, tex0);
+	texCube(P, V, Mp7, tex.at(files[start+7]));
 
 
 	glm::mat4 Mp8 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp8 = glm::translate(Mp8, glm::vec3(8.0f, 2.0f, 99.0f));
-	texCube(P, V, Mp8, tex0);
+	texCube(P, V, Mp8, tex.at(files[start+8]));
 
 
 	glm::mat4 Mp9 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp9 = glm::translate(Mp9, glm::vec3(0.0f, 2.0f, 99.0f));
-	texCube(P, V, Mp9, tex1);
+	texCube(P, V, Mp9, tex.at(files[start+9]));
 
 }
 
-void endPaintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
+void endPaintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V, int start)
 {
 
 	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp2 = glm::translate(Mp2, glm::vec3(-99.0f, 2.0f, 6.5f));
-	texCube(P, V, Mp2, tex0);
+	texCube(P, V, Mp2, tex.at(files[start]));
 
 	glm::mat4 Mp3 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp3 = glm::translate(Mp3, glm::vec3(-99.0f, 2.0f, -6.5f));
-	texCube(P, V, Mp3, tex1);
+	texCube(P, V, Mp3, tex.at(files[start+1]));
 
 	glm::mat4 Mp4 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp4 = glm::translate(Mp4, glm::vec3(99.0f, 2.0f, 6.5f));
-	texCube(P, V, Mp4, tex0);
+	texCube(P, V, Mp4, tex.at(files[start+2]));
 
 	glm::mat4 Mp5 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp5 = glm::translate(Mp5, glm::vec3(99.0f, 2.0f, -6.5f));
-	texCube(P, V, Mp5, tex1);
+	texCube(P, V, Mp5, tex.at(files[start+3]));
 }
 
-void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
+void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V, int start)
 {
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-99.0f, -2.0f, 0.0f));
-	texCube(P, V, Mp1, tex1);
+	texCube(P, V, Mp1, tex.at(files[start]));
 }
 
 void character() {
@@ -436,6 +464,7 @@ void character() {
 
 
 
+
 //Drawing procedure
 void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear color and depth buffers
@@ -454,40 +483,41 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	spTextured->use();
 	//glBindTexture(GL_TEXTURE_2D, tex1);
 
-
-	midPainting(Ms,P,V);
-	//spLambert->use();//Aktywacja programu cieniującego
-
+	// pokoj 1 + korytarz
+	midPainting(Ms,P,V,14);
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 0.0f, 1.0f));
 	room1exit(Ms,P,V);
-	endPaintings(Ms, P, V);
-	paintings(Ms,P,V);
+	paintings(Ms,P,V,0);
+	endPaintings(Ms, P, V, 10);
 
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	corridor(Ms,P,V);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	room2exit(Ms, P, V);
-	paintings(Ms, P, V);
-	endPaintings(Ms,P,V);
 
+	//pokoj 2 + korytarz
+	room2exit(Ms, P, V);
+	endPaintings(Ms, P, V,15);
+	paintings(Ms,P,V,19);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	corridor(Ms, P, V);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	room2exit(Ms, P, V);
-	paintings(Ms, P, V);
-	endPaintings(Ms, P, V);
 
+	//pokoj 3 + korytarz
+	room2exit(Ms, P, V);
+	paintings(Ms, P, V,29);
+	endPaintings(Ms, P, V,39);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
 	corridor(Ms, P, V);
 	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	
+	//pokoj 4
 	room1exit(Ms, P, V);
-	paintings(Ms, P, V);
-	endPaintings(Ms, P, V);
+	paintings(Ms, P, V, 42);
+	endPaintings(Ms, P, V,52);
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 	Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
-
-	midPainting(Ms, P, V);
+	midPainting(Ms, P, V,57);
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
