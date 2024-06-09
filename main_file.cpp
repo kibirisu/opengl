@@ -27,8 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "allmodels.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
+#include "myCube.h"
 
-glm::vec3 cameraPos = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -42,7 +43,11 @@ float fov   =  45.0f;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-GLuint tex;
+GLuint tex0;
+GLuint tex1;
+GLuint tex2;
+
+
 
 void processInput(GLFWwindow *window)
 {
@@ -113,26 +118,6 @@ void error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
 
-//Procedura obsługi klawiatury
-/*void key_callback(GLFWwindow* window, int key,*/
-/*	int scancode, int action, int mods) {*/
-/**/
-/*	if (action == GLFW_PRESS) {*/
-/*		if (key == GLFW_KEY_LEFT) c.Position += 1; //Jeżeli wciśnięto klawisz "w lewo" ustaw prędkość na -PI*/
-/*		if (key == GLFW_KEY_RIGHT) c.Position -= 1; //Jeżeli wciśnięto klawisz "w prawo" ustaw prędkość na PI*/
-/*		if (key == GLFW_KEY_A) {*/
-/*			turn = PI / 6;*/
-/*		}*/
-/*		if (key == GLFW_KEY_D) {*/
-/*			turn = -PI / 6;*/
-/*		}*/
-/*	}*/
-/**/
-/*	if (action == GLFW_RELEASE) {*/
-/*		if (key == GLFW_KEY_LEFT || key == GLFW_KEY_RIGHT) speed = 0;*/
-/*		if (key == GLFW_KEY_A || key == GLFW_KEY_D) turn = 0;*/
-/*	}*/
-/*}*/
 
 GLuint readTexture(const char* filename) {
 	GLuint tex;
@@ -157,29 +142,58 @@ GLuint readTexture(const char* filename) {
 	return tex;
 }
 
+void texCube(glm::mat4 P, glm::mat4 V, glm::mat4 M, GLuint tex) {
+
+	spTextured->use();
+
+	glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V));
+	glUniformMatrix4fv(spTextured->u("M"), 1, false, glm::value_ptr(M));
+
+
+	glEnableVertexAttribArray(spTextured->a("vertex"));
+	glVertexAttribPointer(spTextured->a("vertex"), 4, GL_FLOAT, false, 0, myCubeVertices);
+
+	glEnableVertexAttribArray(spTextured->a("texCoord"));
+	glVertexAttribPointer(spTextured->a("texCoord"), 2, GL_FLOAT, false, 0, myCubeTexCoords);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glUniform1i(spTextured->u("tex"), 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, myCubeVertexCount);
+
+	glDisableVertexAttribArray(spTextured->a("vertex"));
+	glDisableVertexAttribArray(spTextured->a("color"));
+}
+
 //Initialization code procedure
 void initOpenGLProgram(GLFWwindow* window) {
 	initShaders();
 	//************Place any code here that needs to be executed once, at the program start************
 	glClearColor(0, 0, 0, 1); //Set color buffer clear color
 	glEnable(GL_DEPTH_TEST); //Turn on pixel depth test based on depth buffer
-	tex = readTexture("stone-wall.png");
+	tex0=readTexture("stone-wall.png");
+	tex1 = readTexture("bricks.png");
+	tex2 = readTexture("nazwa.png");
 }
 
 //Release resources allocated by the program
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
-	glDeleteTextures(1, &tex);
+	glDeleteTextures(1, &tex0);
+	glDeleteTextures(1, &tex1);
+	glDeleteTextures(1, &tex2);
+
+
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
 
-void room1exit(glm::mat4 Ms) {
+void room1exit(glm::mat4 Ms, glm::mat4 P, glm::mat4 V) {
 
 	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf1));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf1, tex0);
 
 	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
@@ -289,114 +303,85 @@ void corridor(glm::mat4 Ms)
 	Models::cube.drawSolid();
 }
 
-void paintings(glm::mat4 Ms)
+void paintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 {
 	/*spTextured->use();*/
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-8.0f, 2.0f, -99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));
-	Models::cube.drawSolid();
-	/*spLambert->use();*/
+	texCube(P, V, Mp1, tex0);
+
 
 	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp2 = glm::translate(Mp2, glm::vec3(-4.0f, 2.0f, -99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp2, tex0);
+
 
 	glm::mat4 Mp3 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp3 = glm::translate(Mp3, glm::vec3(4.0f, 2.0f, -99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp3));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp3, tex0);
+
 
 	glm::mat4 Mp4 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp4 = glm::translate(Mp4, glm::vec3(8.0f, 2.0f, -99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp4));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp4, tex0);
+
 
 	glm::mat4 Mp0 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp0 = glm::translate(Mp0, glm::vec3(0.0f, 2.0f, -99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp0));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp0, tex0);
+
 
 	glm::mat4 Mp5 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp5 = glm::translate(Mp5, glm::vec3(-8.0f, 2.0f, 99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp5));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp5, tex2);
+
 
 	glm::mat4 Mp6 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp6 = glm::translate(Mp6, glm::vec3(-4.0f, 2.0f, 99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp6));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp6, tex0);
+
 
 	glm::mat4 Mp7 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp7 = glm::translate(Mp7, glm::vec3(4.0f, 2.0f, 99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp7));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp7, tex0);
+
 
 	glm::mat4 Mp8 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp8 = glm::translate(Mp8, glm::vec3(8.0f, 2.0f, 99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp8));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp8, tex0);
+
 
 	glm::mat4 Mp9 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp9 = glm::translate(Mp9, glm::vec3(0.0f, 2.0f, 99.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp9));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp9, tex1);
+
 }
 
-void endPaintings(glm::mat4 Ms)
+void endPaintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 {
 
 	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp2 = glm::translate(Mp2, glm::vec3(-99.0f, 2.0f, 6.5f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp2, tex0);
 
 	glm::mat4 Mp3 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp3 = glm::translate(Mp3, glm::vec3(-99.0f, 2.0f, -6.5f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp3));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp3, tex1);
 
 	glm::mat4 Mp4 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp4 = glm::translate(Mp4, glm::vec3(99.0f, 2.0f, 6.5f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp4));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp4, tex0);
 
 	glm::mat4 Mp5 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp5 = glm::translate(Mp5, glm::vec3(99.0f, 2.0f, -6.5f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp5));
-	Models::cube.drawSolid();
+	texCube(P, V, Mp5, tex2);
 }
 
 void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 {
-	spTextured->use();
-	glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V));
-
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-99.0f, -2.0f, 0.0f));
-	glUniform4f(spLambert->u("color"), 0, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mp1));
-	Models::cube.drawSolid();
-
-	spLambert->use();
-	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+	texCube(P, V, Mp1, tex1);
 }
 
 void character() {
@@ -441,59 +426,61 @@ void character() {
   Models::sphere.drawSolid();
 }
 
+
+
 //Drawing procedure
 void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
-	//************Place any code here that draws something inside the window******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear color and depth buffers
 
-	glm::mat4 P = glm::perspective(glm::radians(fov), 1920.0f / 1080.0f, 0.1f, 100.0f);
+	glm::mat4 P = glm::perspective(glm::radians(fov), 1.0f, 0.1f, 100.0f);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-	spLambert->use();
-	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
-	/*glUniformMatrix4fv(spTextured->u("P"), 1, false, glm::value_ptr(P));*/
-	/*glUniformMatrix4fv(spTextured->u("V"), 1, false, glm::value_ptr(V));*/
-
-  character();
-	spLambert->use();//Aktywacja programu cieniującego
-	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+	//spLambert->use();//Aktywacja programu cieniującego
+    character();
+	//glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+	//glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
 	glm::mat4 Ms = glm::mat4(1.0f);
-	midPainting(Ms, P, V);
+
+
+	spTextured->use();
+	//glBindTexture(GL_TEXTURE_2D, tex1);
+
+
+	midPainting(Ms,P,V);
+	//spLambert->use();//Aktywacja programu cieniującego
 
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 0.0f, 1.0f));
-	room1exit(Ms);
-	endPaintings(Ms);
-	paintings(Ms);
+	room1exit(Ms,P,V);
+	endPaintings(Ms, P, V);
+	paintings(Ms,P,V);
 
-	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
-	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	corridor(Ms);
-	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	room2exit(Ms);
-	paintings(Ms);
-	endPaintings(Ms);
+	//Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	//corridor(Ms);
+	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	//room2exit(Ms);
+	//paintings(Ms);
+	/*endPaintings(Ms,P,V);*/
 
-	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	corridor(Ms);
-	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	room2exit(Ms);
-	paintings(Ms);
-	endPaintings(Ms);
+	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	//corridor(Ms);
+	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	//room2exit(Ms);
+	//paintings(Ms);
+	//endPaintings(Ms);
 
-	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	corridor(Ms);
-	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	room1exit(Ms);
-	paintings(Ms);
-	endPaintings(Ms);
-	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
-	Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
+	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	//corridor(Ms);
+	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	//room1exit(Ms);
+	//paintings(Ms);
+	//endPaintings(Ms);
+	//Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+	//Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
 
-	midPainting(Ms, P, V);
-	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+	//midPainting(Ms);
+	//Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
 
@@ -511,7 +498,7 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(1920, 1080, "OpenGL", NULL, NULL);  //Create a window 500pxx500px titled "OpenGL" and an OpenGL context associated with it. 
+	window = glfwCreateWindow(1000, 1000, "OpenGL", NULL, NULL);  //Create a window 500pxx500px titled "OpenGL" and an OpenGL context associated with it. 
 
 	if (!window) //If no window is opened then close the program
 	{
