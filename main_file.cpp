@@ -82,7 +82,7 @@ const char *files[] = {
 	"obrazy/12.png",
 	"obrazy/13.png",
 	"obrazy/14.png",
-  "art/beksiński.png",
+  "art/beksinski.png",
   "art/girl.png",
   "art/klimt.png",
   "art/lato.png",
@@ -90,11 +90,11 @@ const char *files[] = {
   "art/munch.png",
   "art/night.png",
   "art/persistence.png",
-  "art/pomarańczarka.png",
+  "art/pomaranczarka.png",
   "art/wanderer.png",
   "art/waterlilies.png",
   "art/frida.png",
-  "art/macierzyństwo.png",
+  "art/macierzynstwo.png",
   "art/witkacy.png",
   "pop/abbey-road.png",
   "pop/comics.png",
@@ -542,8 +542,8 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	
 	//pokoj 4
 	room1exit(Ms, P, V);
-	paintings(Ms, P, V, 42);
-	endPaintings(Ms, P, V,52);
+	paintings(Ms, P, V, 43);
+	endPaintings(Ms, P, V,53);
 	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 	Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
 	midPainting(Ms, P, V,57);
