@@ -45,7 +45,7 @@ float lastFrame = 0.0f;
 
 GLuint tex0;
 GLuint tex1;
-GLuint tex2;
+GLuint wall;
 
 
 
@@ -175,7 +175,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glEnable(GL_DEPTH_TEST); //Turn on pixel depth test based on depth buffer
 	tex0=readTexture("stone-wall.png");
 	tex1 = readTexture("bricks.png");
-	tex2 = readTexture("nazwa.png");
+	wall = readTexture("bluu.png");
 }
 
 //Release resources allocated by the program
@@ -183,7 +183,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
 	glDeleteTextures(1, &tex0);
 	glDeleteTextures(1, &tex1);
-	glDeleteTextures(1, &tex2);
+	glDeleteTextures(1, &wall);
 
 
 	//************Place any code here that needs to be executed once, after the main loop ends************
@@ -197,26 +197,27 @@ void room1exit(glm::mat4 Ms, glm::mat4 P, glm::mat4 V) {
 
 	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf2, tex0);
+
 
 	glm::mat4 Mw1 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
 	Mw1 = glm::translate(Mw1, glm::vec3(0.0f, 1.0f, 80.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw1));
-	Models::cube.drawSolid();
+	texCube(P, V, Mw1, wall);
+
 
 	glm::mat4 Mw2 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
 	Mw2 = glm::translate(Mw2, glm::vec3(0.0f, 1.0f, -80.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mw2, wall);
+
 
 	glm::mat4 Mw3 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
 	Mw3 = glm::translate(Mw3, glm::vec3(80.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw3));
-	Models::cube.drawSolid();
+	texCube(P, V, Mw3, wall);
+
 
 	glm::mat4 Mw4 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
 	Mw4 = glm::translate(Mw4, glm::vec3(-80.0f, 1.0f, 0.0f));
+
 	
 	glm::mat4 Mk1 = glm::scale(Mw4, glm::vec3(1.0f, 1.0f, 0.4f));
 	Mk1 = glm::translate(Mk1, glm::vec3(0.0f, 0.0f, 1.5f));
@@ -333,7 +334,7 @@ void paintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 
 	glm::mat4 Mp5 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp5 = glm::translate(Mp5, glm::vec3(-8.0f, 2.0f, 99.0f));
-	texCube(P, V, Mp5, tex2);
+	texCube(P, V, Mp5, tex0);
 
 
 	glm::mat4 Mp6 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
@@ -374,7 +375,7 @@ void endPaintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 
 	glm::mat4 Mp5 = glm::scale(Ms, glm::vec3(0.02f, 0.18f, 0.18f));
 	Mp5 = glm::translate(Mp5, glm::vec3(99.0f, 2.0f, -6.5f));
-	texCube(P, V, Mp5, tex2);
+	texCube(P, V, Mp5, tex1);
 }
 
 void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
