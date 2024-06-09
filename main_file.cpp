@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "shaderprogram.h"
 #include "myCube.h"
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -46,6 +46,8 @@ float lastFrame = 0.0f;
 GLuint tex0;
 GLuint tex1;
 GLuint wall;
+GLuint floor10;
+GLuint ceiling;
 
 
 
@@ -176,6 +178,8 @@ void initOpenGLProgram(GLFWwindow* window) {
 	tex0=readTexture("stone-wall.png");
 	tex1 = readTexture("bricks.png");
 	wall = readTexture("bluu.png");
+	floor10 = readTexture("carpet.png");
+	ceiling = readTexture("sufit.png");
 }
 
 //Release resources allocated by the program
@@ -184,7 +188,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	glDeleteTextures(1, &tex0);
 	glDeleteTextures(1, &tex1);
 	glDeleteTextures(1, &wall);
-
+	glDeleteTextures(1, &floor10);
 
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
@@ -193,11 +197,11 @@ void room1exit(glm::mat4 Ms, glm::mat4 P, glm::mat4 V) {
 
 	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
-	texCube(P, V, Mf1, tex0);
+	texCube(P, V, Mf1, ceiling);
 
 	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
-	texCube(P, V, Mf2, tex0);
+	texCube(P, V, Mf2, floor10);
 
 
 	glm::mat4 Mw1 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
@@ -230,78 +234,67 @@ void room1exit(glm::mat4 Ms, glm::mat4 P, glm::mat4 V) {
 	Models::cube.drawSolid();
 }
 
-void room2exit(glm::mat4 Ms) {
+void room2exit(glm::mat4 Ms, glm::mat4 P, glm::mat4 V) {
 
 	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
-	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
-	glUniform4f(spLambert->u("color"), 1, 1, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf1));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf1, ceiling);
 
 	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(2.0f, 0.025f, 2.0f));
 	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf2, floor10);
 
 	glm::mat4 Mw1 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
 	Mw1 = glm::translate(Mw1, glm::vec3(0.0f, 1.0f, 80.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw1));
-	Models::cube.drawSolid();
+	texCube(P, V, Mw1, wall);
 
 	glm::mat4 Mw2 = glm::scale(Ms, glm::vec3(2.0f, 0.375f, 0.025f));
 	Mw2 = glm::translate(Mw2, glm::vec3(0.0f, 1.0f, -80.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mw2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mw2, wall);
+
 
 	glm::mat4 Mw4 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
 	Mw4 = glm::translate(Mw4, glm::vec3(-80.0f, 1.0f, 0.0f));
 
 	glm::mat4 Mk1 = glm::scale(Mw4, glm::vec3(1.0f, 1.0f, 0.4f));
 	Mk1 = glm::translate(Mk1, glm::vec3(0.0f, 0.0f, 1.5f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk1));
-	Models::cube.drawSolid();
+	texCube(P, V, Mk1, wall);
+
 
 	glm::mat4 Mk2 = glm::scale(Mw4, glm::vec3(1.0f, 1.0f, 0.4f));
 	Mk2 = glm::translate(Mk2, glm::vec3(0.0f, 0.0f, -1.5f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mk2, wall);
+
 
 	glm::mat4 Mw5 = glm::scale(Ms, glm::vec3(0.025f, 0.375f, 2.0f));
 	Mw5 = glm::translate(Mw5, glm::vec3(80.0f, 1.0f, 0.0f));
 
 	glm::mat4 Mk4 = glm::scale(Mw5, glm::vec3(1.0f, 1.0f, 0.4f));
 	Mk4 = glm::translate(Mk4, glm::vec3(0.0f, 0.0f, 1.5f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk4));
-	Models::cube.drawSolid();
+	texCube(P, V, Mk4, wall);
+
 
 	glm::mat4 Mk5 = glm::scale(Mw5, glm::vec3(1.0f, 1.0f, 0.4f));
 	Mk5 = glm::translate(Mk5, glm::vec3(0.0f, 0.0f, -1.5f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mk5));
-	Models::cube.drawSolid();
+	texCube(P, V, Mk5, wall);
+
 }
 
-void corridor(glm::mat4 Ms)
+void corridor(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 {
 	glm::mat4 Mf1 = glm::scale(Ms, glm::vec3(1.0f, 0.025f, 0.45f));
-	/*Mp = glm::translate(Mp, glm::vec3(0.0f, -0.0f, 0.0f));*/
-	glUniform4f(spLambert->u("color"), 1, 0, 1, 1);
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf1));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf1, ceiling);
 
 	glm::mat4 Mf2 = glm::scale(Ms, glm::vec3(1.0f, 0.025f, 0.45f));
 	Mf2 = glm::translate(Mf2, glm::vec3(0.0f, 30.0f, 0.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf2));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf2, floor10);
 
 	glm::mat4 Mf3 = glm::scale(Ms, glm::vec3(1.0f, 0.375f, 0.025f));
 	Mf3 = glm::translate(Mf3, glm::vec3(0.0f, 1.0f, 17.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf3));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf3, wall);
 
 	glm::mat4 Mf4 = glm::scale(Ms, glm::vec3(1.0f, 0.375f, 0.025f));
 	Mf4 = glm::translate(Mf4, glm::vec3(0.0f, 1.0f, -17.0f));
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(Mf4));
-	Models::cube.drawSolid();
+	texCube(P, V, Mf4, wall);
 }
 
 void paintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
@@ -386,7 +379,7 @@ void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 }
 
 void character() {
-	glm::mat4 Ms = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.65f, 0.0f));
+	glm::mat4 Ms = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.68f, 0.0f));
 
 	// Corpus
 	glm::mat4 Mp = glm::scale(Ms, 0.1f * glm::vec3(0.125f, 0.5f, 0.5f));
@@ -433,7 +426,7 @@ void character() {
 void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear color and depth buffers
 
-	glm::mat4 P = glm::perspective(glm::radians(fov), 1.0f, 0.1f, 100.0f);
+	glm::mat4 P = glm::perspective(glm::radians(fov), 1920.0f/1080.0f, 0.1f, 100.0f);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	spLambert->use();//Aktywacja programu cieniującego
@@ -456,32 +449,32 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	endPaintings(Ms, P, V);
 	paintings(Ms,P,V);
 
-	//Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
-	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	//corridor(Ms);
-	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	//room2exit(Ms);
-	//paintings(Ms);
-	/*endPaintings(Ms,P,V);*/
+	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	corridor(Ms,P,V);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	room2exit(Ms, P, V);
+	paintings(Ms, P, V);
+	endPaintings(Ms,P,V);
 
-	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	//corridor(Ms);
-	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	//room2exit(Ms);
-	//paintings(Ms);
-	//endPaintings(Ms);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	corridor(Ms, P, V);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	room2exit(Ms, P, V);
+	paintings(Ms, P, V);
+	endPaintings(Ms, P, V);
 
-	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	//corridor(Ms);
-	//Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
-	//room1exit(Ms);
-	//paintings(Ms);
-	//endPaintings(Ms);
-	//Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
-	//Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	corridor(Ms, P, V);
+	Ms = glm::translate(Ms, glm::vec3(3.0f, 0.0f, 0.0f));
+	room1exit(Ms, P, V);
+	paintings(Ms, P, V);
+	endPaintings(Ms, P, V);
+	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+	Ms = glm::translate(Ms, glm::vec3(0.0f, 0.72f, 0.0f));
 
-	//midPainting(Ms);
-	//Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
+	midPainting(Ms, P, V);
+	Ms = glm::rotate(Ms, PI, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
 
@@ -499,7 +492,7 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(1000, 1000, "OpenGL", NULL, NULL);  //Create a window 500pxx500px titled "OpenGL" and an OpenGL context associated with it. 
+	window = glfwCreateWindow(1920, 1080, "OpenGL", NULL, NULL);  //Create a window 500pxx500px titled "OpenGL" and an OpenGL context associated with it. 
 
 	if (!window) //If no window is opened then close the program
 	{
