@@ -436,10 +436,10 @@ void drawScene(GLFWwindow* window, float angle, float wheelAngle) {
 	glm::mat4 P = glm::perspective(glm::radians(fov), 1.0f, 0.1f, 100.0f);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-	//spLambert->use();//Aktywacja programu cieniującego
+	spLambert->use();//Aktywacja programu cieniującego
     character();
-	//glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
-	//glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
+	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P));
+	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V));
 
 	glm::mat4 Ms = glm::mat4(1.0f);
 
