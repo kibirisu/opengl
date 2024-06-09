@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define GLM_FORCE_RADIANS
 
+#include <map>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -49,7 +50,11 @@ GLuint wall;
 GLuint floor10;
 GLuint ceiling;
 
+std::map<const char*, GLuint> tex;
 
+const char *files[] = {
+  "ciemne.png"
+};
 
 void processInput(GLFWwindow *window)
 {
@@ -144,6 +149,12 @@ GLuint readTexture(const char* filename) {
 	return tex;
 }
 
+void populateTextures() {
+  for (auto f : files) {
+    tex[f] = readTexture(f);
+  }
+}
+
 void texCube(glm::mat4 P, glm::mat4 V, glm::mat4 M, GLuint tex) {
 
 	spTextured->use();
@@ -180,6 +191,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	wall = readTexture("bluu.png");
 	floor10 = readTexture("carpet.png");
 	ceiling = readTexture("sufit.png");
+  populateTextures();
 }
 
 //Release resources allocated by the program
@@ -189,7 +201,9 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	glDeleteTextures(1, &tex1);
 	glDeleteTextures(1, &wall);
 	glDeleteTextures(1, &floor10);
-
+  for (const auto& [k, v] : tex) {
+    glDeleteTextures(1, &v);
+  }
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
 
@@ -302,7 +316,7 @@ void paintings(glm::mat4 Ms, glm::mat4 P, glm::mat4 V)
 	/*spTextured->use();*/
 	glm::mat4 Mp1 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
 	Mp1 = glm::translate(Mp1, glm::vec3(-8.0f, 2.0f, -99.0f));
-	texCube(P, V, Mp1, tex0);
+	texCube(P, V, Mp1, tex.at("ciemne.png"));
 
 
 	glm::mat4 Mp2 = glm::scale(Ms, glm::vec3(0.18f, 0.18f, 0.02f));
