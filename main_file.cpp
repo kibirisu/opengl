@@ -44,8 +44,8 @@ float fov   =  45.0f;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-GLuint tex0;
-GLuint tex1;
+float mov = 0.0f;
+
 GLuint wall;
 GLuint floor10;
 GLuint ceiling;
@@ -243,8 +243,6 @@ void initOpenGLProgram(GLFWwindow* window) {
 	//************Place any code here that needs to be executed once, at the program start************
 	glClearColor(0, 0, 0, 1); //Set color buffer clear color
 	glEnable(GL_DEPTH_TEST); //Turn on pixel depth test based on depth buffer
-	tex0=readTexture("stone-wall.png");
-	tex1 = readTexture("bricks.png");
 	wall = readTexture("bluu.png");
 	floor10 = readTexture("carpet.png");
 	ceiling = readTexture("sufit.png");
@@ -254,13 +252,11 @@ void initOpenGLProgram(GLFWwindow* window) {
 //Release resources allocated by the program
 void freeOpenGLProgram(GLFWwindow* window) {
 	freeShaders();
-	glDeleteTextures(1, &tex0);
-	glDeleteTextures(1, &tex1);
 	glDeleteTextures(1, &wall);
 	glDeleteTextures(1, &floor10);
-	/*for (const auto& [k, v] : tex) {
+	for (const auto& [k, v] : tex) {
 		glDeleteTextures(1, &v);
-	}*/
+	}
 	//************Place any code here that needs to be executed once, after the main loop ends************
 }
 
@@ -450,7 +446,8 @@ void midPainting(glm::mat4 Ms, glm::mat4 P, glm::mat4 V, int start)
 }
 
 void character(glm::mat4 Ms, float r, float g, float b) {
-	Ms = glm::translate(Ms, glm::vec3(0.0f, -0.68f, 0.0f));
+  Ms = glm::rotate(Ms, mov * 0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
+	Ms = glm::translate(Ms, glm::vec3(mov * 0.007f, -0.68f, 0.0f));
 	spLambert->use();
 
 	// Corpus
@@ -617,12 +614,10 @@ int main(void)
 	while (!glfwWindowShouldClose(window)) //As long as the window shouldnt be closed yet...
 	{
     float currentFrame = static_cast<float>(glfwGetTime());
+    mov += 0.007f * currentFrame;
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
     processInput(window);
-		/*angle += speed * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame*/
-		/*wheelAngle += PI / 6 * glfwGetTime(); //Compute an angle by which the object was rotated during the previous frame*/
-		/*glfwSetTime(0); //clear internal timer*/
 		drawScene(window); //Execute drawing procedure
 		glfwPollEvents(); //Process callback procedures corresponding to the events that took place up to now
 	}
